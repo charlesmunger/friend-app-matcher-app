@@ -1,0 +1,9 @@
+<resources>
+
+    <string name="app_name">Friend App Matcher</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="menu_settings">Settings</string>
+    <string name="title_activity_upload_apps">Upload Apps</string>
+    <string name="submitText">Submit</string>
+
+</resources>
