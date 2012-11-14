@@ -2,6 +2,7 @@ package edu.ucsb.cs290.friendappmatcher;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.apache.http.HttpResponse;
@@ -41,10 +42,11 @@ import com.facebook.android.Util;
 public class UploadApps extends Activity {
 	Facebook facebook = new Facebook("458513954190761");
 	AsyncFacebookRunner mAsyncRunner = new AsyncFacebookRunner(facebook);
-	private static final String URL_STRING = "ec2-107-20-28-194.compute-1.amazonaws.com/";
+	private static final String URL_STRING = "http://ec2-107-20-28-194.compute-1.amazonaws.com/";
 	private ListView l;
 	private List<String> appNames;
 	private SharedPreferences mPrefs;
+	private boolean testing = false;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -76,6 +78,9 @@ public class UploadApps extends Activity {
 
 				@Override
 				public void onFacebookError(FacebookError error) {
+					Log.w("fama", "Failed authing to facebook", error);
+					if(error.getMessage().startsWith("Android key mismatch. Your key"));
+						testing = true;
 				}
 
 				@Override
@@ -119,8 +124,13 @@ public class UploadApps extends Activity {
 					final List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>();
 					nameValuePairs
 							.add(new BasicNameValuePair("apps", params[0]));
-					JSONObject json = Util.parseJson(facebook.request("me"));
-					String userId = json.getString("id");
+
+					String userId = "charlesmunger";
+					if(!testing) {
+						JSONObject json = Util.parseJson(facebook.request("me"));
+						userId = json.getString("id");
+					}
+					
 					nameValuePairs.add(new BasicNameValuePair("user", userId));
 					HttpPost httppost = new HttpPost(URL_STRING);
 					httppost.setEntity(new UrlEncodedFormEntity(nameValuePairs,
@@ -139,8 +149,10 @@ public class UploadApps extends Activity {
 					Log.e("fama", "Failed authing to facebook");
 					Toast.makeText(thiscontext, "Failed authenticating to Facebook", Toast.LENGTH_SHORT);
 					thiscontext.finish();
+					return;
 				}
 				Log.d("fama", r.toString());
+				Log.v("fama", Arrays.deepToString(r.getAllHeaders()));
 				Toast.makeText(thiscontext, "Posted apps!", Toast.LENGTH_SHORT)
 						.show();
 				thiscontext.finish();

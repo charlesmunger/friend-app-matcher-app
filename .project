@@ -3,6 +3,7 @@
 	<name>friend-app-matcher-app</name>
 	<comment></comment>
 	<projects>
+		<project>facebook</project>
 	</projects>
 	<buildSpec>
 		<buildCommand>
