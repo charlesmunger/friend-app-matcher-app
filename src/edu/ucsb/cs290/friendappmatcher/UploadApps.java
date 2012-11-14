@@ -131,7 +131,7 @@ public class UploadApps extends Activity {
 						userId = json.getString("id");
 					}
 					
-					nameValuePairs.add(new BasicNameValuePair("user", userId));
+					nameValuePairs.add(new BasicNameValuePair("uid", userId));
 					HttpPost httppost = new HttpPost(URL_STRING);
 					httppost.setEntity(new UrlEncodedFormEntity(nameValuePairs,
 							HTTP.UTF_8));
