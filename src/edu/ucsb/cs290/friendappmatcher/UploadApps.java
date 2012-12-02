@@ -42,7 +42,7 @@ import com.facebook.android.Util;
 public class UploadApps extends Activity {
 	Facebook facebook = new Facebook("458513954190761");
 	AsyncFacebookRunner mAsyncRunner = new AsyncFacebookRunner(facebook);
-	private static final String URL_STRING = "http://ec2-107-20-28-194.compute-1.amazonaws.com/";
+	private static final String URL_STRING = "http://www.friendappmatcher.com/user_apps/";
 	private ListView l;
 	private List<String> appNames;
 	private SharedPreferences mPrefs;
@@ -124,17 +124,19 @@ public class UploadApps extends Activity {
 					final List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>();
 					nameValuePairs
 							.add(new BasicNameValuePair("apps", params[0]));
-
+					String token = "dummyToken";
 					String userId = "charlesmunger";
 					if(!testing) {
 						JSONObject json = Util.parseJson(facebook.request("me"));
 						userId = json.getString("id");
+						token = facebook.getAccessToken();
 					}
 					
 					nameValuePairs.add(new BasicNameValuePair("uid", userId));
+					nameValuePairs.add(new BasicNameValuePair("token", token));
 					HttpPost httppost = new HttpPost(URL_STRING);
-					httppost.setEntity(new UrlEncodedFormEntity(nameValuePairs,
-							HTTP.UTF_8));
+					httppost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
+					httppost.setHeader("content_type", "text/plain");
 					HttpClient httpclient = new DefaultHttpClient();
 					return httpclient.execute(httppost);
 				} catch (Exception e) {
