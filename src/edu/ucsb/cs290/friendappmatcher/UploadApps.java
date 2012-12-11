@@ -1,23 +1,19 @@
 package edu.ucsb.cs290.friendappmatcher;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
-import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
-import org.apache.http.protocol.HTTP;
 import org.json.JSONObject;
 
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.ApplicationInfo;
@@ -43,6 +39,7 @@ public class UploadApps extends Activity {
 	Facebook facebook = new Facebook("458513954190761");
 	AsyncFacebookRunner mAsyncRunner = new AsyncFacebookRunner(facebook);
 	private static final String URL_STRING = "http://www.friendappmatcher.com/user_apps/";
+	
 	private ListView l;
 	private List<String> appNames;
 	private SharedPreferences mPrefs;
@@ -131,17 +128,16 @@ public class UploadApps extends Activity {
 						userId = json.getString("id");
 						token = facebook.getAccessToken();
 					}
-					
+					Log.d("fama", "About to POST");
 					nameValuePairs.add(new BasicNameValuePair("uid", userId));
 					nameValuePairs.add(new BasicNameValuePair("token", token));
 					HttpPost httppost = new HttpPost(URL_STRING);
 					httppost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
-					httppost.setHeader("content_type", "text/plain");
 					HttpClient httpclient = new DefaultHttpClient();
 					return httpclient.execute(httppost);
 				} catch (Exception e) {
 					// TODO Auto-generated catch block
-					e.printStackTrace();
+					Log.w("fama", "Error posting", e);
 				}
 				return null;
 			}
@@ -155,7 +151,7 @@ public class UploadApps extends Activity {
 				}
 				Log.d("fama", r.toString());
 				Log.v("fama", Arrays.deepToString(r.getAllHeaders()));
-				Toast.makeText(thiscontext, "Posted apps!", Toast.LENGTH_SHORT)
+				Toast.makeText(thiscontext, "Posted apps!" + r.getStatusLine().getStatusCode(), Toast.LENGTH_SHORT)
 						.show();
 				thiscontext.finish();
 			}
